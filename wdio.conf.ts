@@ -2,6 +2,7 @@ import path from 'node:path'
 import url from 'node:url'
 // get browser version from environment variable
 const browserVersion = process.env.BROWSER_VERSION || 'canary'
+const isCI = process.env.CI === 'true';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 
@@ -24,12 +25,13 @@ export const config: WebdriverIO.Config = {
                 '--no-sandbox',
                 '--disable-dev-shm-usage',
                 `--load-extension=${path.join(__dirname, 'extension',)}`,
+                ...(isCI ? ['--headless'] : []),
             ],
             prefs: { 'extensions.ui.developer_mode': true },
         },
     }],
 
-    logLevel: 'error',
+    logLevel: 'info',
 
     bail: 0,
 
