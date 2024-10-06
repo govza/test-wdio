@@ -1,5 +1,7 @@
 import path from 'node:path'
 import url from 'node:url'
+// get browser version from environment variable
+const browserVersion = process.env.BROWSER_VERSION || 'canary'
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 
@@ -13,7 +15,7 @@ export const config: WebdriverIO.Config = {
     maxInstances: 10,
     capabilities: [{
         browserName: 'chrome',
-        browserVersion: 'latest',
+        browserVersion: browserVersion,
         acceptInsecureCerts: true,
         'goog:chromeOptions': {
             args: [
@@ -27,7 +29,7 @@ export const config: WebdriverIO.Config = {
         },
     }],
 
-    logLevel: 'info',
+    logLevel: 'error',
 
     bail: 0,
 
@@ -40,4 +42,7 @@ export const config: WebdriverIO.Config = {
         timeout: 60000
     },
 
+    before: async ({ browserName }: WebdriverIO.Capabilities, _specs, browser: WebdriverIO.Browser) => {
+        console.log(`Running tests in ${browserName} version ${browser.capabilities.browserVersion}`)
+    },
 }
